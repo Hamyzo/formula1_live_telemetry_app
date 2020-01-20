@@ -13,7 +13,11 @@ const RaceSchema = new Schema({
                 {
                     type: Number
                 }
-            ]
+            ],
+            status: {
+                type: String,
+                enum: ['pending', 'participating', 'dnf']
+            }
         }
     ],
     date: {
@@ -28,6 +32,10 @@ const RaceSchema = new Schema({
     },
     nb_laps: {
         type: Number
+    },
+    status: {
+        type: String,
+        enum: ['pending', 'finished', 'ongoing']
     }
 });
 

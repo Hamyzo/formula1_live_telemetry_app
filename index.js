@@ -48,13 +48,10 @@ app.get('/getAllCircuits', function(req, res) {
 });
 
 app.get('/createRace', async (req, res) => {
-	const { country, date, circuit, nb_laps } = req.query;
 
 	console.log(req.query);
-
 	const newRace = new Races(req.query);
 
 	const race = await newRace.save();
-
 	console.log(race);
 });
