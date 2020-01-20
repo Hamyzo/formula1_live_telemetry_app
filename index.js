@@ -1,26 +1,24 @@
-let express = require('express');
-let expressMongoDb = require('express-mongo-db');
-let env = require('./config/env');
+const express = require('express');
+const mongoose = require('mongoose');
+const env = require('./config/env');
+
+const Cars = require('./models/cars');
+const Circuits = require('./models/circuits');
+const Races = require('./models/races');
 
 let app = express();
 
-app.use(expressMongoDb('mongodb://localhost/rasp15'));
-
-let ejs = require('ejs');
-
-app.set('view engine', 'html');
-app.engine('html', ejs.renderFile);
+mongoose.connect('mongodb://localhost:27017/rasp15', {useNewUrlParser: true});
 
 app.listen(env.port);
-
 
 app.get('/', function(req, res, next) {
 
 	res.setHeader('Content-Type', 'text/html');
-	res.render('menu');
+	res.sendFile( __dirname + '/views' + '/menu.html');
 });
 
-app.get('/parcelsHistory', function(req, res) {
+app.get('/raceManagement', function(req, res) {
 	// send the main (and unique) page
 	res.setHeader('Content-Type', 'text/html');
 	res.sendFile( __dirname + '/views' + '/raceManagement.html');
@@ -33,21 +31,30 @@ app.get('/raceManagement.js', function(req, res) {
 	res.sendFile( __dirname + '/js' + '/raceManagement.js');
 });
 
-app.get('/getAllCustomers', function(req, res) {
-	let db = req.db;
-	db.collection('customers').find().aggregate([
-		{
-			$lookup:
-				{
-					from: "locations",
-					localField: "_id",
-					foreignField: "parcels.destLocation",
-					as: "parcels.destLocation"
-				}
-		}
-	]).toArray(function(err, docs) {
+app.get('/getAllRaces', function(req, res) {
+	const races = Races.find({}, (err, docs) => {
 		if (err)
 			throw err;
 		res.json(docs);
 	});
+});
+
+app.get('/getAllCircuits', function(req, res) {
+	const circuits = Circuits.find({}, (err, docs) => {
+		if (err)
+			throw err;
+		res.json(docs);
+	});
+});
+
+app.get('/createRace', async (req, res) => {
+	const { country, date, circuit, nb_laps } = req.query;
+
+	console.log(req.query);
+
+	const newRace = new Races(req.query);
+
+	const race = await newRace.save();
+
+	console.log(race);
 });
