@@ -1,0 +1,36 @@
+<!doctype html>
+
+<html ng-app="angCustApp">
+	<head>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular.min.js"></script>
+        <script src="/parcelsHistory.js"></script>
+		<meta charset="UTF-8">
+      </head>
+      <body>
+	  	<h1>Customers</h1>
+        <div ng-controller="CustomersListController">
+			<select ng-options="customer as customer.custName for customer in customers"
+					ng-model="selectedCustomer" ng-change="updateCustomer()"></select>
+			<h1>Parcels of customer: {{selectedCustomer.custName}}</h1>
+			<table border="true">
+				<thead>
+				<td>id</td>
+				<td>location</td>
+				<td>weight</td>
+				<td>operation</td>
+				</thead>
+				<tbody>
+				<tr ng-repeat="parcel in parcels">
+					<td>{{parcel._id}}</td>
+					<td>{{parcel.destLocation}}</td>
+					<td>{{parcel.weight}}g</td>
+					<td>
+						<p ng-repeat="operation in parcel.operations">{{operation.date}} - {{operation.location || parcel.destLocation}} - {{operation.operation}}<p>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+        </div>
+      </body>
+    </html>
+
