@@ -1,0 +1,42 @@
+<!doctype html>
+
+<html ng-app="angCircApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap-tpls.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="/circuitManagement.js"></script>
+</head>
+<body class="m-3">
+<h1>Circuits</h1>
+<div ng-controller="CircuitsController">
+    <div class="form-group form-inline">
+        <select class="form-control ml-2" ng-options="circuit as circuit.name group by circuit.country for circuit in circuits"
+                ng-model="selectedCircuit" ng-change="updateCircuit(selectedCircuit)">
+            <option value="">-- Select Circuit --</option>
+        </select>
+        <button class="btn btn-primary ml-2"  ng-click="open('new')">Create new circuit</button>
+    </div>
+
+    <div ng-if="showNewCircuit || selectedCircuit">
+        <div>
+            <h3>{{formTitle}} Circuit</h3>
+        </div>
+        <div>
+            <form ng-submit="newCircuit(circuit)">
+                <label class="ml-2 mb-2">Name </label><input class="form-control ml-2 mb-2" type="text" ng-model="circuit.name"/>
+                <label class="ml-2 mb-2">Country </label><input class="form-control ml-2 mb-2" type="text" ng-model="circuit.country"/>
+                <label class="ml-2 mb-2">Lap distance (km) </label><input class="form-control ml-2 mb-2" type="text" ng-model="circuit.lap_distance"/>
+                <input class="btn btn-primary ml-2 mb-2" type="submit"  value="{{formTitle}} Circuit" />
+                <button class="btn btn-default ml-2 mb-2" ng-click="cancel()">Cancel</button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+

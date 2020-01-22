@@ -4,42 +4,78 @@ locApp.controller('RacesController',  ($scope, $http, $uibModal) => {
 	
 	let URL_ALL_RACES = "http://localhost:3015/getAllRaces";
 	let URL_ALL_CIRS = "http://localhost:3015/getAllCircuits";
+	let URL_ALL_CARS = "http://localhost:3015/getAllCars";
 	let URL_ADD_RACE = "http://localhost:3015/createRace";
+	let URL_UPD_RACE = "http://localhost:3015/updateRace/";
 
 	$scope.races = [];
 	$scope.race = {};
+	$scope.selectedCars = [];
 	$scope.showNewRace = false;
 			
 	$http.get(URL_ALL_RACES).then(response => {
-		$scope.races =  response.data;
-		console.log(response);
+		$scope.races = response.data;
+		$scope.races = $scope.races.map(race => {
+			race.date = new Date(race.date);
+			return race;
+		});
+		console.log($scope.races);
     });
 
 	$http.get(URL_ALL_CIRS).then(response => {
-		$scope.circuits =  response.data;
-		console.log(response);
+		$scope.circuits = response.data;
+		console.log($scope.circuits);
+	});
+
+	$http.get(URL_ALL_CARS).then(response => {
+		$scope.cars =  response.data;
+		console.log($scope.cars);
 	});
 
 	$scope.updateRace = () => {
+		$scope.selectedCars = $scope.selectedRace.cars.map(car => car.car._id);
 		console.log($scope.selectedRace);
+		console.log($scope.selectedCars);
 	};
 
-	$scope.open = () => {
-		$scope.showNewRace = true
+	$scope.open = action => {
+		delete $scope.selectedRace.circuit.$$hashKey;
+		$scope.showNewRace = true;
+		$scope.action = action;
+		if (action === "new") {
+			$scope.formTitle = "Add";
+		} else {
+			$scope.formTitle = "Edit";
+			$scope.race = $scope.selectedRace;
+		}
 	};
 
 	$scope.cancel = () => {
 		$scope.showNewRace = false
 	};
 
-	$scope.newRace = () => {
-		console.log("race", $scope.race);
-		const race = $scope.race;
+	$scope.changeSelectedCars = (selectedCars) => {
+		$scope.selectedCars = selectedCars
+	};
 
-		$http.get(URL_ADD_RACE + `?country=${race.country}&date=${race.date}&circuit=${race.circuit}&nb_laps=${race.nb_laps}`).then(response => {
-			$scope.races =  response.data;
-			console.log(response);
-		});
+	$scope.newRace = () => {
+		let race = $scope.race;
+		console.log("selected cars:", $scope.selectedCars);
+		race.cars = $scope.selectedCars.map(car => ({
+			car,
+			lap_times: [],
+			status: "pending"
+		}));
+		if ($scope.action === "new") {
+			$http.get(URL_ADD_RACE + `?country=${race.country}&date=${race.date}&circuit=${race.circuit}&nb_laps=${race.nb_laps}`).then(response => {
+				console.log(response);
+			});
+		} else {
+			console.log(race);
+			$http.get(URL_UPD_RACE + race._id + `?country=${race.country}&date=${race.date}&circuit=${race.circuit._id || race.circuit}&nb_laps=${race.nb_laps}&cars=${JSON.stringify(race.cars)}`).then(response => {
+				console.log(response);
+			});
+		}
 	};
 });
 

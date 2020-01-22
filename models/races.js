@@ -9,11 +9,7 @@ const RaceSchema = new Schema({
                 type: mongoose.Schema.Types.ObjectId,
                 ref: "cars"
             },
-            lap_times: [
-                {
-                    type: Number
-                }
-            ],
+            lap_times: [[Number]],
             status: {
                 type: String,
                 enum: ['pending', 'participating', 'dnf']
