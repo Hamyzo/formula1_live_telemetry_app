@@ -1,0 +1,65 @@
+<!doctype html>
+
+<html ng-app="angTeleApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap-tpls.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <!--<script src="/socket.io/socket.io.js"></script>-->
+    <link rel='stylesheet' type='text/css' href="/style.css"/>
+    <script src="/telemetry.js"></script>
+
+    <script type = "text/javascript">
+        const socket = io();
+        socket.on('message', function(msg){
+            angular.element($('#telemetryController')).scope().reloadRaces();
+            console.log("message: " + msg)
+        });
+    </script>
+</head>
+<body class="m-3">
+<div id="telemetryController" ng-controller="telemetryController">
+    <button ng-click="back()" class="btn btn-outline-secondary"><i class="fa fa-arrow-left"></i> Go back</button>
+    <h1>Available Races</h1>
+    <div class="form-group form-inline">
+        <select class="form-control ml-2" ng-options="race as race.circuit.name + ' - ' + (race.date | date:'d MMM yyyy') + ' (' + race.status + ')' group by race.country for race in races"
+                ng-model="race" ng-change="reloadRace()">
+            <option value="">-- Select Race To Show --</option>
+        </select>
+    </div>
+    <div class="card mt-3" ng-if="race">
+        <a><h5 class="card-header">{{race.circuit.name}}</h5></a>
+        <div class="row card-body" id="race{{race._id}}">
+            <div class="col-6">
+                <h5 class="card-title">Top 3 cars</h5>
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        <p><b> 1 - </b>{{race.cars[0].car.driver}} - {{race.cars[0].car.team}} <b>{{race.cars[0].status !== "participating" ? "(DNF)" : "(total time: " + race.cars[0].total_time + "s)"}}</b></p>
+                        <p> lap: {{race.cars[0].lap_times.length}}, sector: {{race.cars[0].lap_times[race.cars[0].lap_times.length -1].length}}</p>
+                    </li>
+                    <li class="list-group-item">
+                        <p><b> 2 - </b>{{race.cars[1].car.driver}} - {{race.cars[1].car.team}} <b>{{race.cars[1].status !== "participating" ? "(DNF)" : "(total time: " + race.cars[1].total_time + "s)"}}</b></p>
+                        <p> lap: {{race.cars[1].lap_times.length}}, sector: {{race.cars[1].lap_times[race.cars[1].lap_times.length -1].length}}</p>
+                    </li>
+                    <li class="list-group-item">
+                        <p><b> 3 - </b>{{race.cars[2].car.driver}} - {{race.cars[2].car.team}} <b>{{race.cars[2].status !== "participating" ? "(DNF)" : "(total time: " + race.cars[2].total_time + "s)"}}</b></p>
+                        <p> lap: {{race.cars[2].lap_times.length}}, sector: {{race.cars[2].lap_times[race.cars[2].lap_times.length -1].length}}</p>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-6">
+                <h5 class="card-title">Best lap time</h5>
+                <ul class="list-group">
+                    <li class="list-group-item">{{best_lap.car.car.driver}} ({{best_lap.time}})</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

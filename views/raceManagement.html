@@ -12,10 +12,11 @@
         <script src="/raceManagement.js"></script>
       </head>
       <body class="m-3">
-	  	<h1>Races</h1>
-        <div ng-controller="RacesController">
+	  	<div ng-controller="RacesController">
+		  	<button ng-click="back()" class="btn btn-outline-secondary"><i class="fa fa-arrow-left"></i> Go back</button>
+	  		<h1>Races</h1>
 			<div class="form-group form-inline">
-				<select class="form-control ml-2" ng-options="race as race.circuit.name + ' - ' + (race.date | date:'d MMM yyyy') group by race.country for race in races"
+				<select class="form-control ml-2" ng-options="race as race.circuit.name + ' - ' + (race.date | date:'d MMM yyyy') + ' (' + race.status + ')' group by race.country for race in races"
 						ng-model="selectedRace" ng-change="updateRace()">
 					<option value="">-- Select Race --</option>
 				</select>

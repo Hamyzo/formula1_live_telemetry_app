@@ -12,8 +12,9 @@
     <script src="/carManagement.js"></script>
 </head>
 <body class="m-3">
-<h1>Cars</h1>
 <div ng-controller="CarsController">
+    <button ng-click="back()" class="btn btn-outline-secondary"><i class="fa fa-arrow-left"></i> Go back</button>
+    <h1>Cars</h1>
     <div class="form-group form-inline">
         <select class="form-control ml-2" ng-options="car as car.number + ' - ' + car.driver group by car.team for car in cars"
                 ng-model="selectedCar" ng-change="updateCar(selectedCar)">

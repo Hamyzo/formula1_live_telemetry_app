@@ -14,6 +14,10 @@ locApp.controller('CircuitsController',  ($scope, $http, $uibModal) => {
         console.log($scope.circuits);
     });
 
+    $scope.back = () => {
+        history.back();
+    };
+
     $scope.updateCircuit = (selectedCircuit) => {
         $scope.selectedCircuit = selectedCircuit;
         console.log($scope.selectedCircuit);

@@ -8,25 +8,54 @@ const Races = require('./models/races');
 
 let app = express();
 
-mongoose.connect('mongodb://localhost:27017/rasp15', {useNewUrlParser: true});
+mongoose.connect('mongodb://localhost:27017/rasp15', {useNewUrlParser: true, useUnifiedTopology: true});
 
-app.listen(env.port);
-
-app.get('/', function(req, res, next) {
-
-	res.setHeader('Content-Type', 'text/html');
-	res.sendFile( __dirname + '/views' + '/menu.html');
+const server = require('http').createServer(app);
+const io = require('socket.io')(server);
+io.on('connection', function(socket) {
+	console.log('a user connected');
+	socket.on('raspberry message', (msg) => {
+		console.log('message received from raspberry: ', msg);
+		console.log('message body received from raspberry: ', msg.response);
+		io.emit('message', msg.response);
+	});
+	socket.on('disconnect', () => {
+		console.log('user disconnected');
+	});
 });
 
+server.listen(env.port);
+
+
+// --------------------- CSS --------------------- //
+
+app.get('/style.css', function(req, res) {
+	res.setHeader('Content-Type', 'text/css');
+	res.sendFile( __dirname + '/style.css');
+});
+
+
+// --------------------- HOME --------------------- //
+
+app.get('/', function(req, res) {
+	res.setHeader('Content-Type', 'text/html');
+	res.sendFile( __dirname + '/views' + '/home.html');
+});
+
+app.get('/getOngoingRaces', async (req, res) => {
+	const races = await Races.find().populate("circuit").populate("cars.car");
+	res.json(races);
+});
+
+
+// --------------------- RACE MANAGEMENT --------------------- //
+
 app.get('/raceManagement', function(req, res) {
-	// send the main (and unique) page
 	res.setHeader('Content-Type', 'text/html');
 	res.sendFile( __dirname + '/views' + '/raceManagement.html');
 });
 
-
 app.get('/raceManagement.js', function(req, res) {
-	// send the angular app
 	res.setHeader('Content-Type', 'application/javascript');
 	res.sendFile( __dirname + '/js' + '/raceManagement.js');
 });
@@ -34,16 +63,6 @@ app.get('/raceManagement.js', function(req, res) {
 app.get('/getAllRaces', async (req, res) => {
 	const races = await Races.find().populate("circuit").populate("cars.car");
 	res.json(races);
-});
-
-app.get('/getAllCircuits', async (req, res) => {
-	const circuits = await Circuits.find();
-	res.json(circuits);
-});
-
-app.get('/getAllCars', async (req, res) => {
-	const cars = await Cars.find();
-	res.json(cars);
 });
 
 app.get('/createRace', async (req, res) => {
@@ -65,18 +84,21 @@ app.get('/updateRace/:id', async (req, res) => {
 });
 
 
+// --------------------- CAR MANAGEMENT --------------------- //
 
 app.get('/carManagement', function(req, res) {
-	// send the main (and unique) page
 	res.setHeader('Content-Type', 'text/html');
 	res.sendFile( __dirname + '/views' + '/carManagement.html');
 });
 
-
 app.get('/carManagement.js', function(req, res) {
-	// send the angular app
 	res.setHeader('Content-Type', 'application/javascript');
 	res.sendFile( __dirname + '/js' + '/carManagement.js');
+});
+
+app.get('/getAllCars', async (req, res) => {
+	const cars = await Cars.find();
+	res.json(cars);
 });
 
 app.get('/updateCar/:id', async (req, res) => {
@@ -88,18 +110,21 @@ app.get('/updateCar/:id', async (req, res) => {
 });
 
 
+// --------------------- CIRCUIT MANAGEMENT --------------------- //
 
 app.get('/circuitManagement', function(req, res) {
-	// send the main (and unique) page
 	res.setHeader('Content-Type', 'text/html');
 	res.sendFile( __dirname + '/views' + '/circuitManagement.html');
 });
 
-
 app.get('/circuitManagement.js', function(req, res) {
-	// send the angular app
 	res.setHeader('Content-Type', 'application/javascript');
 	res.sendFile( __dirname + '/js' + '/circuitManagement.js');
+});
+
+app.get('/getAllCircuits', async (req, res) => {
+	const circuits = await Circuits.find();
+	res.json(circuits);
 });
 
 app.get('/createCircuit', async (req, res) => {
@@ -117,4 +142,27 @@ app.get('/updateCircuit/:id', async (req, res) => {
 	let circuit = req.query;
 	const response = await Circuits.updateOne({"_id": req.params.id}, circuit);
 	console.log(response);
+});
+
+
+// --------------------- TELEMETRY --------------------- //
+
+app.get('/telemetry', function(req, res) {
+	res.setHeader('Content-Type', 'text/html');
+	res.sendFile( __dirname + '/views' + '/telemetry.html');
+});
+
+app.get('/telemetry.js', function(req, res) {
+	res.setHeader('Content-Type', 'application/javascript');
+	res.sendFile( __dirname + '/js' + '/telemetry.js');
+});
+
+app.get('/getOngoingRaces', async (req, res) => {
+	const races = await Races.find({"status": "ongoing"}).populate("circuit").populate("cars.car");
+	res.json(races);
+});
+
+app.get('/getRace/:id', async (req, res) => {
+	const race = await Races.findOne({"_id": req.params.id}).populate("circuit").populate("cars.car");
+	res.json(race);
 });

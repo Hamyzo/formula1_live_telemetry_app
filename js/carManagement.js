@@ -10,6 +10,10 @@ locApp.controller('CarsController',  ($scope, $http, $uibModal) => {
         console.log($scope.cars);
     });
 
+    $scope.back = () => {
+        history.back();
+    };
+
     $scope.updateCar = (selectedCar) => {
         $scope.selectedCar = selectedCar;
         console.log($scope.selectedCar);

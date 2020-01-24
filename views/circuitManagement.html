@@ -12,8 +12,9 @@
     <script src="/circuitManagement.js"></script>
 </head>
 <body class="m-3">
-<h1>Circuits</h1>
 <div ng-controller="CircuitsController">
+    <button ng-click="back()" class="btn btn-outline-secondary"><i class="fa fa-arrow-left"></i> Go back</button>
+    <h1>Circuits</h1>
     <div class="form-group form-inline">
         <select class="form-control ml-2" ng-options="circuit as circuit.name group by circuit.country for circuit in circuits"
                 ng-model="selectedCircuit" ng-change="updateCircuit(selectedCircuit)">

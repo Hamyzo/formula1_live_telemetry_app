@@ -38,6 +38,10 @@ locApp.controller('RacesController',  ($scope, $http, $uibModal) => {
 		console.log($scope.selectedCars);
 	};
 
+	$scope.back = () => {
+		history.back();
+	};
+
 	$scope.open = action => {
 		delete $scope.selectedRace.circuit.$$hashKey;
 		$scope.showNewRace = true;
