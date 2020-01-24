@@ -12,7 +12,7 @@ const RaceSchema = new Schema({
             lap_times: [[Number]],
             status: {
                 type: String,
-                enum: ['pending', 'participating', 'dnf']
+                enum: ['pending', 'participating', 'dnf', 'finished']
             }
         }
     ],

@@ -12,6 +12,7 @@ mongoose.connect('mongodb://localhost:27017/rasp15', {useNewUrlParser: true, use
 
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
+
 io.on('connection', function(socket) {
 	console.log('a user connected');
 	socket.on('raspberry message', (msg) => {
@@ -66,21 +67,14 @@ app.get('/getAllRaces', async (req, res) => {
 });
 
 app.get('/createRace', async (req, res) => {
-
-	console.log(req.query);
 	const newRace = new Races(req.query);
-
 	const race = await newRace.save();
-	console.log(race);
 });
 
 app.get('/updateRace/:id', async (req, res) => {
-	console.log(req.query);
 	let race = req.query;
 	race.cars = JSON.parse(req.query.cars);
-	console.log(race);
 	const response = await Races.updateOne({"_id": req.params.id}, race);
-	console.log(response);
 });
 
 
@@ -102,11 +96,8 @@ app.get('/getAllCars', async (req, res) => {
 });
 
 app.get('/updateCar/:id', async (req, res) => {
-	console.log(req.query);
-	console.log(req.params.id);
 	let car = req.query;
 	const response = await Cars.updateOne({"_id": req.params.id}, car);
-	console.log(response);
 });
 
 
@@ -128,20 +119,14 @@ app.get('/getAllCircuits', async (req, res) => {
 });
 
 app.get('/createCircuit', async (req, res) => {
-
-	console.log(req.query);
 	const newCircuit = new Circuits(req.query);
 
 	const circuit = await newCircuit.save();
-	console.log(circuit);
 });
 
 app.get('/updateCircuit/:id', async (req, res) => {
-	console.log(req.query);
-	console.log(req.params.id);
 	let circuit = req.query;
 	const response = await Circuits.updateOne({"_id": req.params.id}, circuit);
-	console.log(response);
 });
 
 
