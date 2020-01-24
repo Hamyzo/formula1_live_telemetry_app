@@ -2,9 +2,9 @@ locApp = angular.module('angCircApp', ['ui.bootstrap']);
 
 locApp.controller('CircuitsController',  ($scope, $http, $uibModal) => {
 
-    let URL_ALL_CIRS = "http://localhost:3015/getAllCircuits";
-    let URL_ADD_CIR = "http://localhost:3015/createCircuit";
-    let URL_UPD_CIR = "http://localhost:3015/updateCircuit/";
+    let URL_ALL_CIRS = "http://localhost:3001/getAllCircuits";
+    let URL_ADD_CIR = "http://localhost:3001/createCircuit";
+    let URL_UPD_CIR = "http://localhost:3001/updateCircuit/";
 
     $scope.race = {};
     $scope.showNewCircuit = false;

@@ -2,11 +2,11 @@ locApp = angular.module('angRaceApp', ['ui.bootstrap']);
 
 locApp.controller('RacesController',  ($scope, $http, $uibModal) => {
 	
-	let URL_ALL_RACES = "http://localhost:3015/getAllRaces";
-	let URL_ALL_CIRS = "http://localhost:3015/getAllCircuits";
-	let URL_ALL_CARS = "http://localhost:3015/getAllCars";
-	let URL_ADD_RACE = "http://localhost:3015/createRace";
-	let URL_UPD_RACE = "http://localhost:3015/updateRace/";
+	let URL_ALL_RACES = "http://localhost:3001/getAllRaces";
+	let URL_ALL_CIRS = "http://localhost:3001/getAllCircuits";
+	let URL_ALL_CARS = "http://localhost:3001/getAllCars";
+	let URL_ADD_RACE = "http://localhost:3001/createRace";
+	let URL_UPD_RACE = "http://localhost:3001/updateRace/";
 
 	$scope.races = [];
 	$scope.race = {};
