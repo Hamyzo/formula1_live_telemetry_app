@@ -36,7 +36,7 @@
             <h3>{{formTitle}} Race</h3>
         </div>
         <div>
-            <form ng-submit="newRace()">
+            <form ng-submit="newRace()" >
                 <label class="ml-2 mb-2">Country </label><input class="form-control ml-2 mb-2" type="text"
                                                                 ng-model="race.country"/>
                 <label class="ml-2 mb-2">Date </label><input class="form-control ml-2 mb-2" type="date"
@@ -62,7 +62,7 @@
     </div>
     <div ng-if="!showNewRace && selectedRace">
         <h1>Details of race:
-            <button class="btn btn-outline-secondary" ng-click="open('edit')"><i class="fa fa-edit"></i> Edit race
+            <button class="btn btn-outline-light" ng-click="open('edit')"><i class="fa fa-edit"></i> Edit race
             </button>
         </h1>
         <div class="row">

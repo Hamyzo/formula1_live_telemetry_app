@@ -24,9 +24,14 @@
         });
     </script>
 </head>
-<body class="m-3">
+<body class="m-3" style="
+	background-image: url('/assets/images/norris.jpg');
+	background-attachment: fixed;
+  	background-size: cover;
+  	color: white;
+	">
 <div id="telemetryController" ng-controller="telemetryController">
-    <button ng-click="back()" class="btn btn-outline-secondary"><i class="fa fa-arrow-left"></i> Go back</button>
+    <button ng-click="back()" class="btn btn-outline-light"><i class="fa fa-arrow-left"></i> Go back</button>
     <h1>Available Races</h1>
     <div class="form-group form-inline">
         <select class="form-control ml-2" ng-options="race as race.circuit.name + ' - ' + (race.date | date:'d MMM yyyy') + ' (' + race.status + ')' group by race.country for race in races"
@@ -34,7 +39,7 @@
             <option value="">-- Select Race To Show --</option>
         </select>
     </div>
-    <div class="card mt-3" ng-if="race">
+    <div class="card mt-3" ng-if="race" style="background: rgba(0, 0, 0, 0.5);">
         <div class="ml-0 mr-0 card-header row">
             <div class="col-5">
                 <b>{{race.circuit.name}}</b>
@@ -64,7 +69,7 @@
             <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade show active" id="leaderboard" role="tabpanel" aria-labelledby="leaderboard-tab">
                     <h5 class="card-title">Live leaderboard</h5>
-                    <table class="table">
+                    <table class="table" style="color: white">
                         <thead>
                         <tr>
                             <th scope="col">POS</th>
@@ -103,12 +108,12 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="tab-pane fade" id="performance" role="tabpanel" aria-labelledby="performance-tab">
+                <div class="tab-pane fade" id="performance" role="tabpanel" aria-labelledby="performance-tab" >
                     <div class="row">
                         <div class="col-3">
                             <h5 class="card-title">Top lap times</h5>
-                            <ul class="list-group">
-                                <li ng-repeat="i in [0, 1, 2, 3, 4]" class="list-group-item">
+                            <ul class="list-group" >
+                                <li ng-repeat="i in [0, 1, 2, 3, 4]" class="list-group-item" style="background: rgba(225, 225, 225, 0.5);">
                                     {{lap_times[i].time}}s <span class="float-right">{{lap_times[i].car.car.driver}}</span>
                                 </li>
                             </ul>
@@ -116,7 +121,7 @@
                         <div class="col-3">
                             <h5 class="card-title">Top Sector 1 times</h5>
                             <ul class="list-group">
-                                <li ng-repeat="i in [0, 1, 2, 3, 4]" class="list-group-item">
+                                <li ng-repeat="i in [0, 1, 2, 3, 4]" class="list-group-item" style="background: rgba(225, 225, 225, 0.5);">
                                     {{sector_times[0][i].time}}s <span class="float-right">{{sector_times[0][i].car.car.driver}}</span>
                                 </li>
                             </ul>
@@ -124,7 +129,7 @@
                         <div class="col-3">
                             <h5 class="card-title">Top Sector 2 times</h5>
                             <ul class="list-group">
-                                <li ng-repeat="i in [0, 1, 2, 3, 4]" class="list-group-item">
+                                <li ng-repeat="i in [0, 1, 2, 3, 4]" class="list-group-item"style="background: rgba(225, 225, 225, 0.5);">
                                     {{sector_times[1][i].time}}s <span class="float-right">{{sector_times[1][i].car.car.driver}}</span>
                                 </li>
                             </ul>
@@ -132,7 +137,7 @@
                         <div class="col-3">
                             <h5 class="card-title">Top Sector 3 times</h5>
                             <ul class="list-group">
-                                <li ng-repeat="i in [0, 1, 2, 3, 4]" class="list-group-item">
+                                <li ng-repeat="i in [0, 1, 2, 3, 4]" class="list-group-item" style="background: rgba(225, 225, 225, 0.5);">
                                     {{sector_times[2][i].time}}s <span class="float-right">{{sector_times[2][i].car.car.driver}}</span>
                                 </li>
                             </ul>
@@ -144,7 +149,7 @@
                         <div class="col-3">
                             <h5 class="card-title">Top lap speeds</h5>
                             <ul class="list-group">
-                                <li ng-repeat="i in [0, 1, 2, 3, 4]" class="list-group-item">
+                                <li ng-repeat="i in [0, 1, 2, 3, 4]" class="list-group-item" style="background: rgba(225, 225, 225, 0.5);">
                                     {{race.circuit.lap_distance/(lap_times[i].time/3600) | number: 0}}km/h <span class="float-right">{{lap_times[i].car.car.driver}}</span>
                                 </li>
                             </ul>
@@ -152,7 +157,7 @@
                         <div class="col-3">
                             <h5 class="card-title">Top Sector 1 speeds</h5>
                             <ul class="list-group">
-                                <li ng-repeat="i in [0, 1, 2, 3, 4]" class="list-group-item">
+                                <li ng-repeat="i in [0, 1, 2, 3, 4]" class="list-group-item" style="background: rgba(225, 225, 225, 0.5);">
                                     {{(race.circuit.lap_distance/3)/(sector_times[0][i].time/3600) | number: 0}}km/h <span class="float-right">{{sector_times[0][i].car.car.driver}}</span>
                                 </li>
                             </ul>
@@ -160,7 +165,7 @@
                         <div class="col-3">
                             <h5 class="card-title">Top Sector 2 speeds</h5>
                             <ul class="list-group">
-                                <li ng-repeat="i in [0, 1, 2, 3, 4]" class="list-group-item">
+                                <li ng-repeat="i in [0, 1, 2, 3, 4]" class="list-group-item" style="background: rgba(225, 225, 225, 0.5);">
                                     {{(race.circuit.lap_distance/3)/(sector_times[1][i].time/3600) | number: 0}}km/h <span class="float-right">{{sector_times[1][i].car.car.driver}}</span>
                                 </li>
                             </ul>
@@ -168,7 +173,7 @@
                         <div class="col-3">
                             <h5 class="card-title">Top Sector 3 speeds</h5>
                             <ul class="list-group">
-                                <li ng-repeat="i in [0, 1, 2, 3, 4]" class="list-group-item">
+                                <li ng-repeat="i in [0, 1, 2, 3, 4]" class="list-group-item" style="background: rgba(225, 225, 225, 0.5);">
                                     {{(race.circuit.lap_distance/3)/(sector_times[2][i].time/3600) | number: 0}}km/h <span class="float-right">{{sector_times[2][i].car.car.driver}}</span>
                                 </li>
                             </ul>
