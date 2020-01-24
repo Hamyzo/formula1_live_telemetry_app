@@ -8,6 +8,8 @@ const Races = require('./models/races');
 
 let app = express();
 
+app.use(express.static(__dirname + '/'));
+
 mongoose.connect('mongodb://localhost:27017/rasp15', {useNewUrlParser: true, useUnifiedTopology: true});
 
 const server = require('http').createServer(app);
@@ -36,95 +38,6 @@ app.get('/port.js', function(req, res) {
 });
 
 
-// --------------------- CSS --------------------- //
-
-app.get('/style.css', function(req, res) {
-	res.setHeader('Content-Type', 'text/css');
-	res.sendFile( __dirname + '/style.css');
-});
-
-
-// --------------------- ASSETS -------------------- //
-
-app.get('/assets/css/bootstrap.min.css', function(req, res) {
-	res.setHeader('Content-Type', 'text/css');
-	res.sendFile( __dirname + '/assets/css/bootstrap.min.css');
-});
-
-app.get('/assets/css/style.css', function(req, res) {
-	res.setHeader('Content-Type', 'text/css');
-	res.sendFile( __dirname + '/assets/css/style.css');
-});
-
-app.get('/assets/js/popper.min.js', function(req, res) {
-	res.setHeader('Content-Type', 'application/js');
-	res.sendFile( __dirname + '/assets/js/popper.min.js');
-});
-
-app.get('/assets/js/jquery-1.12.0.min.js', function(req, res) {
-	res.setHeader('Content-Type', 'application/js');
-	res.sendFile( __dirname + '/assets/js/jquery-1.12.0.min.js');
-});
-
-app.get('/assets/js/bootstrap.min.js', function(req, res) {
-	res.setHeader('Content-Type', 'application/js');
-	res.sendFile( __dirname + '/assets/js/bootstrap.min.js');
-});
-
-app.get('/assets/js/owl.carousel.min.js', function(req, res) {
-	res.setHeader('Content-Type', 'application/js');
-	res.sendFile( __dirname + '/assets/js/owl.carousel.min.js');
-});
-
-app.get('/assets/js/jquery.yu2fvl.js', function(req, res) {
-	res.setHeader('Content-Type', 'application/js');
-	res.sendFile( __dirname + '/assets/js/jquery.yu2fvl.js');
-});
-
-app.get('/assets/js/main.js', function(req, res) {
-	res.setHeader('Content-Type', 'application/js');
-	res.sendFile( __dirname + '/assets/js/main.js');
-});
-
-app.get('/assets/images/formula1-bg1.png', function(req, res) {
-	res.setHeader('Content-Type', 'image/png');
-	res.sendFile( __dirname + '/assets/images/formula1-bg1.png');
-});
-
-app.get('/assets/images/formula-timing2.jpg', function(req, res) {
-	res.setHeader('Content-Type', 'image/jpg');
-	res.sendFile( __dirname + '/assets/images/formula-timing2.jpg');
-});
-
-app.get('/assets/images/Race.jpg', function(req, res) {
-	res.setHeader('Content-Type', 'image/jpg');
-	res.sendFile( __dirname + '/assets/images/Race.jpg');
-});
-
-app.get('/assets/images/Renault-RS18.jpg', function(req, res) {
-	res.setHeader('Content-Type', 'image/jpg');
-	res.sendFile( __dirname + '/assets/images/Renault-RS18.jpg');
-});
-
-app.get('/assets/images/formula1-bg-33.png', function(req, res) {
-	res.setHeader('Content-Type', 'image/png');
-	res.sendFile( __dirname + '/assets/images/formula1-bg-33.png');
-});
-
-app.get('/assets/images/sport-sport-mecanique-formule-1-grand-prix-de-spa-francorchamps-belgique-04.jpg', function(req, res) {
-	res.setHeader('Content-Type', 'image/jpg');
-	res.sendFile( __dirname + '/assets/images/sport-sport-mecanique-formule-1-grand-prix-de-spa-francorchamps-belgique-04.jpg');
-});
-
-app.get('/assets/images/formula1-bg-33.png', function(req, res) {
-	res.setHeader('Content-Type', 'image/png');
-	res.sendFile( __dirname + '/assets/images/formula1-bg-33.png');
-});
-
-app.get('/assets/fonts/Montserrat-Bold.ttf', function(req, res) {
-	res.setHeader('Content-Type', 'font/ttf');
-	res.sendFile( __dirname + '/assets/fonts/Montserrat-Bold.ttf');
-});
 // --------------------- HOME --------------------- //
 
 app.get('/', function(req, res) {
@@ -241,3 +154,19 @@ app.get('/getRace/:id', async (req, res) => {
 	const race = await Races.findOne({"_id": req.params.id}).populate("circuit").populate("cars.car");
 	res.json(race);
 });
+
+
+
+
+// ************************************************************ TO BE FIXED ************************************************************ //
+
+
+
+// --------------------- CSS --------------------- //
+
+app.get('/style.css', function(req, res) {
+	res.setHeader('Content-Type', 'text/css');
+	res.sendFile( __dirname + '/style.css');
+});
+
+
