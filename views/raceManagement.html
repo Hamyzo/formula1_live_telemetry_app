@@ -1,92 +1,110 @@
 <!doctype html>
 
 <html ng-app="angRaceApp">
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap-tpls.min.js"></script>
-		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-        <script src="/raceManagement.js"></script>
-		<script src="/port.js"></script>
-      </head>
-      <body class="m-3">
-	  	<div ng-controller="RacesController">
-		  	<button ng-click="back()" class="btn btn-outline-secondary"><i class="fa fa-arrow-left"></i> Go back</button>
-	  		<h1>Races</h1>
-			<div class="form-group form-inline">
-				<select class="form-control ml-2" ng-options="race as race.circuit.name + ' - ' + (race.date | date:'d MMM yyyy') + ' (' + race.status + ')' group by race.country for race in races"
-						ng-model="selectedRace" ng-change="updateRace()">
-					<option value="">-- Select Race --</option>
-				</select>
-				<button class="btn btn-primary ml-2"  ng-click="open('new')">Create new race</button>
-			</div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap-tpls.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="/raceManagement.js"></script>
+    <script src="/port.js"></script>
+</head>
+<body class="m-3" style="
+	background-image: url('/assets/images/renault.jpg');
+	background-attachment: fixed;
+  	background-size: cover;
+  	color: white;
+	">
+<div ng-controller="RacesController">
+    <button ng-click="back()" class="btn btn-outline-light"><i class="fa fa-arrow-left"></i> Go back</button>
+    <img src="../assets/images/formula1-bg.png" width="250" align="right">
+    <h1>Races</h1>
+    <div class="form-group form-inline">
+        <select class="form-control ml-2"
+                ng-options="race as race.circuit.name + ' - ' + (race.date | date:'d MMM yyyy') + ' (' + race.status + ')' group by race.country for race in races"
+                ng-model="selectedRace" ng-change="updateRace()">
+            <option value="">-- Select Race --</option>
+        </select>
+        <button class="btn btn-danger ml-2" ng-click="open('new')">Create new race</button>
+    </div>
 
-			<div ng-if="showNewRace">
-				<div>
-					<h3>{{formTitle}} Race</h3>
-				</div>
-				<div>
-					<form ng-submit="newRace()">
-						<label class="ml-2 mb-2">Country </label><input class="form-control ml-2 mb-2" type="text" ng-model="race.country"/>
-						<label class="ml-2 mb-2">Date </label><input class="form-control ml-2 mb-2" type="date" ng-model="race.date"/>
-						<label class="ml-2 mb-2">Circuit</label>
-						<select class="form-control ml-2" ng-options="circuit._id as circuit.name + ' - ' + circuit.country for circuit in circuits"
-								ng-model="race.circuit._id">
-							<option value="">Select the circuit</option>
-						</select>
-						<label class="ml-2 mb-2">Number of laps </label><input class="form-control ml-2 mb-2" type="text" ng-model="race.nb_laps"/>
-						<label class="ml-2 mb-2">Cars</label>
-						<select class="form-control ml-2" ng-multiple="true" ng-options="car._id as car.driver + ' - ' + car.team for car in cars"
-								ng-model="selectedCars" ng-change="changeSelectedCars(selectedCars)" multiple>
-							<option value="">Select the cars</option>
-						</select>
-						<input class="btn btn-primary ml-2 mb-2" type="submit"  value="{{formTitle}} Race" />
-						<button class="btn btn-default ml-2 mb-2" ng-click="cancel()">Cancel</button>
-					</form>
-				</div>
-			</div>
-			<div ng-if="!showNewRace && selectedRace">
-				<h1>Details of race: <button class="btn btn-outline-secondary" ng-click="open('edit')"><i class="fa fa-edit"></i> Edit race</button></h1>
-				<div class="row">
-					<div class="col-4">
-						<h4>Information</h4>
-						<ul class="list-group">
-							<li class="list-group-item"><b>Country:</b> {{ selectedRace.country }}</li>
-							<li class="list-group-item"><b>Circuit:</b> {{ selectedRace.circuit.name }} (lap distance: {{selectedRace.circuit.lap_distance}}km)</li>
-							<li class="list-group-item"><b>Date: </b><span ng-bind="(selectedRace.date | date:'d MMM yyyy')">{{ selectedRace.date }}</span></li>
-							<li class="list-group-item"><b>Laps:</b> {{ selectedRace.nb_laps }}</li>
-							<li class="list-group-item"><b>Status:</b> {{ selectedRace.status }}</li>
-						</ul>
-					</div>
-					<div class="col-8">
-						<h4>Racers</h4>
-						<table class="table table-striped" style="width:100%">
-								<thead>
-								<tr>
-									<th scope="col">Team</th>
-									<th scope="col">Driver</th>
-									<th scope="col">Manufacturer</th>
-									<th scope="col">Number</th>
-									<th scope="col">Status</th>
-								</tr>
-							</thead>
-								<tbody>
-								<tr ng-repeat="car in selectedRace.cars">
-									<td>{{ car.car.team }}</td>
-									<td>{{ car.car.driver }}</td>
-									<td>{{ car.car.manufacturer }}</td>
-									<td>{{ car.car.number }}</td>
-									<td>{{ car.status }}</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</div>
+    <div ng-if="showNewRace">
+        <div>
+            <h3>{{formTitle}} Race</h3>
         </div>
-      </body>
-    </html>
+        <div>
+            <form ng-submit="newRace()">
+                <label class="ml-2 mb-2">Country </label><input class="form-control ml-2 mb-2" type="text"
+                                                                ng-model="race.country"/>
+                <label class="ml-2 mb-2">Date </label><input class="form-control ml-2 mb-2" type="date"
+                                                             ng-model="race.date"/>
+                <label class="ml-2 mb-2">Circuit</label>
+                <select class="form-control ml-2"
+                        ng-options="circuit._id as circuit.name + ' - ' + circuit.country for circuit in circuits"
+                        ng-model="race.circuit._id">
+                    <option value="">Select the circuit</option>
+                </select>
+                <label class="ml-2 mb-2">Number of laps </label><input class="form-control ml-2 mb-2" type="text"
+                                                                       ng-model="race.nb_laps"/>
+                <label class="ml-2 mb-2">Cars</label>
+                <select class="form-control ml-2" ng-multiple="true"
+                        ng-options="car._id as car.driver + ' - ' + car.team for car in cars"
+                        ng-model="selectedCars" ng-change="changeSelectedCars(selectedCars)" multiple>
+                    <option value="">Select the cars</option>
+                </select>
+                <input class="btn btn-primary ml-2 mb-2" type="submit" value="{{formTitle}} Race"/>
+                <button class="btn btn-default ml-2 mb-2" ng-click="cancel()">Cancel</button>
+            </form>
+        </div>
+    </div>
+    <div ng-if="!showNewRace && selectedRace">
+        <h1>Details of race:
+            <button class="btn btn-outline-secondary" ng-click="open('edit')"><i class="fa fa-edit"></i> Edit race
+            </button>
+        </h1>
+        <div class="row">
+            <div class="col-4">
+                <h4>Information</h4>
+                <ul class="list-group" style="color: black">
+                    <li class="list-group-item"><b>Country:</b> {{ selectedRace.country }}</li>
+                    <li class="list-group-item"><b>Circuit:</b> {{ selectedRace.circuit.name }} (lap distance:
+                        {{selectedRace.circuit.lap_distance}}km)
+                    </li>
+                    <li class="list-group-item"><b>Date: </b><span ng-bind="(selectedRace.date | date:'d MMM yyyy')">{{ selectedRace.date }}</span>
+                    </li>
+                    <li class="list-group-item"><b>Laps:</b> {{ selectedRace.nb_laps }}</li>
+                    <li class="list-group-item"><b>Status:</b> {{ selectedRace.status }}</li>
+                </ul>
+            </div>
+            <div class="col-8">
+                <h4>Racers</h4>
+                <table class="table table-striped" style="width:100%; color: white">
+                    <thead>
+                    <tr>
+                        <th scope="col">Team</th>
+                        <th scope="col">Driver</th>
+                        <th scope="col">Manufacturer</th>
+                        <th scope="col">Number</th>
+                        <th scope="col">Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="car in selectedRace.cars">
+                        <td>{{ car.car.team }}</td>
+                        <td>{{ car.car.driver }}</td>
+                        <td>{{ car.car.manufacturer }}</td>
+                        <td>{{ car.car.number }}</td>
+                        <td>{{ car.status }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
 

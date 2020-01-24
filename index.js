@@ -91,6 +91,16 @@ app.get('/assets/images/formula1-bg1.png', function(req, res) {
 	res.sendFile( __dirname + '/assets/images/formula1-bg1.png');
 });
 
+app.get('/assets/images/formula1-bg.png', function(req, res) {
+	res.setHeader('Content-Type', 'image/png');
+	res.sendFile( __dirname + '/assets/images/formula1-bg.png');
+});
+
+app.get('/assets/images/sainz.png', function(req, res) {
+	res.setHeader('Content-Type', 'image/png');
+	res.sendFile( __dirname + '/assets/images/sainz.png');
+});
+
 app.get('/assets/images/formula-timing2.jpg', function(req, res) {
 	res.setHeader('Content-Type', 'image/jpg');
 	res.sendFile( __dirname + '/assets/images/formula-timing2.jpg');
@@ -99,6 +109,11 @@ app.get('/assets/images/formula-timing2.jpg', function(req, res) {
 app.get('/assets/images/Race.jpg', function(req, res) {
 	res.setHeader('Content-Type', 'image/jpg');
 	res.sendFile( __dirname + '/assets/images/Race.jpg');
+});
+
+app.get('/assets/images/marina_bay.jpg', function(req, res) {
+	res.setHeader('Content-Type', 'image/jpg');
+	res.sendFile( __dirname + '/assets/images/marina_bay.jpg');
 });
 
 app.get('/assets/images/Renault-RS18.jpg', function(req, res) {
@@ -119,6 +134,11 @@ app.get('/assets/images/sport-sport-mecanique-formule-1-grand-prix-de-spa-franco
 app.get('/assets/images/formula1-bg-33.png', function(req, res) {
 	res.setHeader('Content-Type', 'image/png');
 	res.sendFile( __dirname + '/assets/images/formula1-bg-33.png');
+});
+
+app.get('/assets/images/renault.jpg', function(req, res) {
+	res.setHeader('Content-Type', 'image/png');
+	res.sendFile( __dirname + '/assets/images/renault.jpg');
 });
 
 app.get('/assets/fonts/Montserrat-Bold.ttf', function(req, res) {

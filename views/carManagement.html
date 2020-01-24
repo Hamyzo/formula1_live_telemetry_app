@@ -12,9 +12,15 @@
     <script src="/carManagement.js"></script>
     <script src="/port.js"></script>
 </head>
-<body class="m-3">
+<body class="m-3" style="
+	background-image: url('/assets/images/sainz.png');
+	background-attachment: fixed;
+  	background-size: cover;
+  	color: white;
+	">
 <div ng-controller="CarsController">
-    <button ng-click="back()" class="btn btn-outline-secondary"><i class="fa fa-arrow-left"></i> Go back</button>
+    <button ng-click="back()" class="btn btn-outline-light"><i class="fa fa-arrow-left"></i> Go back</button>
+    <img src="../assets/images/formula1-bg.png" width="250" align="right">
     <h1>Cars</h1>
     <div class="form-group form-inline">
         <select class="form-control ml-2" ng-options="car as car.number + ' - ' + car.driver group by car.team for car in cars"
@@ -34,8 +40,8 @@
                 <label class="ml-2 mb-2">Team </label><input class="form-control ml-2 mb-2" type="text" ng-model="selectedCar.team"/>
                 <label class="ml-2 mb-2">Color </label><input class="form-control ml-2 mb-2" type="text" ng-model="selectedCar.color"/>
                 <label class="ml-2 mb-2">Manufacturer </label><input class="form-control ml-2 mb-2" type="text" ng-model="selectedCar.manufacturer"/>
-                <input class="btn btn-primary ml-2 mb-2" type="submit"  value="Edit Race" />
-                <button class="btn btn-default ml-2 mb-2" ng-click="cancel()">Cancel</button>
+                <input class="btn btn-danger ml-2 mb-2" type="submit"  value="Edit Race" />
+                <button class="btn btn-light ml-2 mb-2" ng-click="cancel()">Cancel</button>
             </form>
         </div>
     </div>
