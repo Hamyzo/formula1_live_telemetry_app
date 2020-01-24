@@ -100,16 +100,75 @@
                 </div>
                 <div class="tab-pane fade" id="performance" role="tabpanel" aria-labelledby="performance-tab">
                     <div class="row">
-                        <div class="col-6">
+                        <div class="col-3">
                             <h5 class="card-title">Top lap times</h5>
                             <ul class="list-group">
-                                <li ng-repeat="i in [0, 1, 2, 3, 4]" class="list-group-item">{{lap_times[i].car.car.driver}} ({{lap_times[i].time}}s)</li>
+                                <li ng-repeat="i in [0, 1, 2, 3, 4]" class="list-group-item">
+                                    {{lap_times[i].time}}s <span class="float-right">{{lap_times[i].car.car.driver}}</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-3">
+                            <h5 class="card-title">Top Sector 1 times</h5>
+                            <ul class="list-group">
+                                <li ng-repeat="i in [0, 1, 2, 3, 4]" class="list-group-item">
+                                    {{sector_times[0][i].time}}s <span class="float-right">{{sector_times[0][i].car.car.driver}}</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-3">
+                            <h5 class="card-title">Top Sector 2 times</h5>
+                            <ul class="list-group">
+                                <li ng-repeat="i in [0, 1, 2, 3, 4]" class="list-group-item">
+                                    {{sector_times[1][i].time}}s <span class="float-right">{{sector_times[1][i].car.car.driver}}</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-3">
+                            <h5 class="card-title">Top Sector 3 times</h5>
+                            <ul class="list-group">
+                                <li ng-repeat="i in [0, 1, 2, 3, 4]" class="list-group-item">
+                                    {{sector_times[2][i].time}}s <span class="float-right">{{sector_times[2][i].car.car.driver}}</span>
+                                </li>
                             </ul>
                         </div>
                     </div>
                 </div>
                 <div class="tab-pane fade" id="speed" role="tabpanel" aria-labelledby="speed-tab">
-
+                    <div class="row">
+                        <div class="col-3">
+                            <h5 class="card-title">Top lap speeds</h5>
+                            <ul class="list-group">
+                                <li ng-repeat="i in [0, 1, 2, 3, 4]" class="list-group-item">
+                                    {{race.circuit.lap_distance/(lap_times[i].time/3600) | number: 0}}km/h <span class="float-right">{{lap_times[i].car.car.driver}}</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-3">
+                            <h5 class="card-title">Top Sector 1 speeds</h5>
+                            <ul class="list-group">
+                                <li ng-repeat="i in [0, 1, 2, 3, 4]" class="list-group-item">
+                                    {{(race.circuit.lap_distance/3)/(lap_times[i].time/3600) | number: 0}}km/h <span class="float-right">{{lap_times[i].car.car.driver}}</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-3">
+                            <h5 class="card-title">Top Sector 2 speeds</h5>
+                            <ul class="list-group">
+                                <li ng-repeat="i in [0, 1, 2, 3, 4]" class="list-group-item">
+                                    {{(race.circuit.lap_distance/3)/(lap_times[i].time/3600) | number: 0}}km/h <span class="float-right">{{lap_times[i].car.car.driver}}</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-3">
+                            <h5 class="card-title">Top Sector 3 speeds</h5>
+                            <ul class="list-group">
+                                <li ng-repeat="i in [0, 1, 2, 3, 4]" class="list-group-item">
+                                    {{(race.circuit.lap_distance/3)/(lap_times[i].time/3600) | number: 0}}km/h <span class="float-right">{{lap_times[i].car.car.driver}}</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

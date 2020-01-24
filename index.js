@@ -97,6 +97,7 @@ app.get('/getAllCars', async (req, res) => {
 
 app.get('/updateCar/:id', async (req, res) => {
 	let car = req.query;
+	console.log(car);
 	const response = await Cars.updateOne({"_id": req.params.id}, car);
 });
 

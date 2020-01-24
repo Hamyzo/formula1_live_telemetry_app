@@ -6,6 +6,9 @@ const CarSchema = new Schema({
     team: {
         type: String
     },
+    color: {
+        type: String
+    },
     driver: {
         type: String
     },

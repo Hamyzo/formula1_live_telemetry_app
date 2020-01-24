@@ -26,7 +26,7 @@ locApp.controller('CarsController',  ($scope, $http, $uibModal) => {
     $scope.updateCarData = (selectedCar) => {
         const car = selectedCar;
         console.log(car);
-        $http.get(URL_UPD_CAR + car._id + `?team=${car.team}&driver=${car.driver}&manufacturer=${car.manufacturer}&number=${car.number}`).then(response => {
+        $http.get(URL_UPD_CAR + car._id + `?team=${car.team}&color=${car.color}&driver=${car.driver}&manufacturer=${car.manufacturer}&number=${car.number}`).then(response => {
             console.log(response);
         });
     };

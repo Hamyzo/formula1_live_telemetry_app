@@ -7,6 +7,7 @@ locApp.controller('telemetryController',  ($scope, $http, $uibModal) => {
 
     $scope.showNewCircuit = false;
     $scope.lap_times = [];
+    $scope.sector_times = [[], [], []];
 
     $http.get(URL_ONG_RACS).then(response => {
         $scope.races = response.data;
@@ -34,8 +35,12 @@ locApp.controller('telemetryController',  ($scope, $http, $uibModal) => {
                 car.laps = [];
                 car.lap_times.forEach(lap_time => {
                     let current_lap = 0;
-                    lap_time.forEach(time => {
+                    lap_time.forEach((time, i) => {
                         car.total_time += time;
+                        $scope.sector_times[i].push({
+                            car: car,
+                            time: time.toFixed(3)
+                        });
                         current_lap += time;
                     });
                     if (lap_time.length === 3) {
@@ -59,6 +64,16 @@ locApp.controller('telemetryController',  ($scope, $http, $uibModal) => {
                     return -1;
                 return t1.time - t2.time;
             });
+
+            // sorting sector times by best
+            $scope.sector_times.map(sector_time => sector_time.sort((t1, t2) => {
+                if (Math.floor(t1.time) === 0) {
+                    return 1;
+                }
+                if (Math.floor(t2.time) === 0)
+                    return -1;
+                return t1.time - t2.time;
+            }));
 
             // sorting cars by position according to lap, sector and time
             race.cars.sort((car1, car2) => {
