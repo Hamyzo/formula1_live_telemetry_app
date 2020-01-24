@@ -2,8 +2,8 @@ locApp = angular.module('angTeleApp', ['ui.bootstrap']);
 
 locApp.controller('telemetryController',  ($scope, $http, $uibModal) => {
 
-    let URL_ONG_RACS = "http://localhost:3015/getOngoingRaces";
-    let URL_GET_RACE = "http://localhost:3015/getRace/";
+    let URL_ONG_RACS = `http://localhost:${port}/getOngoingRaces`;
+    let URL_GET_RACE = `http://localhost:${port}/getRace/`;
 
     $scope.showNewCircuit = false;
     $scope.lap_times = [];

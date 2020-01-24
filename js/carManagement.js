@@ -2,8 +2,8 @@ locApp = angular.module('angCarApp', ['ui.bootstrap']);
 
 locApp.controller('CarsController',  ($scope, $http, $uibModal) => {
 
-    let URL_ALL_CARS = "http://localhost:3001/getAllCars";
-    let URL_UPD_CAR = "http://localhost:3001/updateCar/";
+    let URL_ALL_CARS = `http://localhost:${port}/getAllCars`;
+    let URL_UPD_CAR = `http://localhost:${port}/updateCar/`;
 
     $http.get(URL_ALL_CARS).then(response => {
         $scope.cars =  response.data;

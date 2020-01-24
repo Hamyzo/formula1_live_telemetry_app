@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const env = require('./config/env');
+const port = require('./config/port');
 
 const Cars = require('./models/cars');
 const Circuits = require('./models/circuits');
@@ -25,7 +25,15 @@ io.on('connection', function(socket) {
 	});
 });
 
-server.listen(env.port);
+server.listen(port);
+
+
+// --------------------- ENV --------------------- //
+
+app.get('/port.js', function(req, res) {
+	res.setHeader('Content-Type', 'application/javascript');
+	res.sendFile( __dirname + '/config/port.js');
+});
 
 
 // --------------------- CSS --------------------- //
@@ -36,7 +44,8 @@ app.get('/style.css', function(req, res) {
 });
 
 
-// --------------------- Adil -------------------- //
+// --------------------- ASSETS -------------------- //
+
 app.get('/assets/css/bootstrap.min.css', function(req, res) {
 	res.setHeader('Content-Type', 'text/css');
 	res.sendFile( __dirname + '/assets/css/bootstrap.min.css');
