@@ -21,7 +21,7 @@
 <div ng-controller="CircuitsController">
     <button ng-click="back()" class="btn btn-outline-light"><i class="fa fa-arrow-left"></i> Go back</button>
     <img src="../assets/images/formula1-bg.png" width="250" align="right">
-    <h1>Circuits</h1>
+    <h1>Circuits Management</h1>
     <div class="form-group form-inline">
         <select class="form-control ml-2" ng-options="circuit as circuit.name group by circuit.country for circuit in circuits"
                 ng-model="selectedCircuit" ng-change="updateCircuit(selectedCircuit)">

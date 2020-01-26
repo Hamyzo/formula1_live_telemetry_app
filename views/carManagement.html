@@ -21,7 +21,7 @@
 <div ng-controller="CarsController">
     <button ng-click="back()" class="btn btn-outline-light"><i class="fa fa-arrow-left"></i> Go back</button>
     <img src="../assets/images/formula1-bg.png" width="250" align="right">
-    <h1>Cars</h1>
+    <h1>Cars Management</h1>
     <div class="form-group form-inline">
         <select class="form-control ml-2" ng-options="car as car.number + ' - ' + car.driver group by car.team for car in cars"
                 ng-model="selectedCar" ng-change="updateCar(selectedCar)">
