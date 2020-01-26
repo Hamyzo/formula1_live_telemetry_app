@@ -43,12 +43,12 @@ locApp.controller('RacesController',  ($scope, $http, $uibModal) => {
 	};
 
 	$scope.open = action => {
-		delete $scope.selectedRace.circuit.$$hashKey;
 		$scope.showNewRace = true;
 		$scope.action = action;
 		if (action === "new") {
 			$scope.formTitle = "Add";
 		} else {
+			delete $scope.selectedRace.circuit.$$hashKey;
 			$scope.formTitle = "Edit";
 			$scope.race = $scope.selectedRace;
 		}
@@ -71,7 +71,7 @@ locApp.controller('RacesController',  ($scope, $http, $uibModal) => {
 			status: "pending"
 		}));
 		if ($scope.action === "new") {
-			$http.get(URL_ADD_RACE + `?country=${race.country}&date=${race.date}&circuit=${race.circuit}&nb_laps=${race.nb_laps}`).then(response => {
+			$http.get(URL_ADD_RACE + `?country=${race.country}&date=${race.date}&circuit=${race.circuit._id || race.circuit}&nb_laps=${race.nb_laps}&cars=${JSON.stringify(race.cars)}`).then(response => {
 				console.log(response);
 			});
 		} else {

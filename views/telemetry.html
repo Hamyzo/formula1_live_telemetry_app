@@ -18,9 +18,108 @@
 
     <script type = "text/javascript">
         const socket = io();
-        socket.on('message', function(msg){
-            angular.element($('#telemetryController')).scope().reloadRaces();
-            console.log("message: " + msg)
+        socket.on('message', function(msg) {
+            angular.element($('#telemetryController')).scope().reloadRace();
+            console.log("message: " + msg);
+            ctx = $('#myChart');
+            const options = {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            reverse: true,
+                            callback: function (value) { if (Number.isInteger(value)) { return value; } }
+                        }
+                    }]
+                },
+                elements: {
+                    line: {
+                        tension: 0
+                    }
+                },
+                animation: false
+            };
+            function getBoxWidth(labelOpts, fontSize) {
+                return labelOpts.usePointStyle ?
+                    fontSize * Math.SQRT2 :
+                    labelOpts.boxWidth;
+            };
+
+            Chart.NewLegend = Chart.Legend.extend({
+                afterFit: function() {
+                    this.height = this.height + 100;
+                },
+            });
+
+            function createNewLegendAndAttach(chartInstance, legendOpts) {
+                var legend = new Chart.NewLegend({
+                    ctx: chartInstance.chart.ctx,
+                    options: legendOpts,
+                    chart: chartInstance
+                });
+
+                if (chartInstance.legend) {
+                    Chart.layoutService.removeBox(chartInstance, chartInstance.legend);
+                    delete chartInstance.newLegend;
+                }
+
+                chartInstance.newLegend = legend;
+                Chart.layoutService.addBox(chartInstance, legend);
+            }
+
+            // Register the legend plugin
+            Chart.plugins.register({
+                beforeInit: function(chartInstance) {
+                    var legendOpts = chartInstance.options.legend;
+
+                    if (legendOpts) {
+                        createNewLegendAndAttach(chartInstance, legendOpts);
+                    }
+                },
+                beforeUpdate: function(chartInstance) {
+                    var legendOpts = chartInstance.options.legend;
+
+                    if (legendOpts) {
+                        legendOpts = Chart.helpers.configMerge(Chart.defaults.global.legend, legendOpts);
+
+                        if (chartInstance.newLegend) {
+                            chartInstance.newLegend.options = legendOpts;
+                        } else {
+                            createNewLegendAndAttach(chartInstance, legendOpts);
+                        }
+                    } else {
+                        Chart.layoutService.removeBox(chartInstance, chartInstance.newLegend);
+                        delete chartInstance.newLegend;
+                    }
+                },
+                afterEvent: function(chartInstance, e) {
+                    var legend = chartInstance.newLegend;
+                    if (legend) {
+                        legend.handleEvent(e);
+                    }
+                }
+            });
+
+            const car_positions = angular.element($('#telemetryController')).scope().car_positions;
+            const lap_times_matrix = angular.element($('#telemetryController')).scope().lap_times_matrix;
+            const race = angular.element($('#telemetryController')).scope().race;
+            console.log(lap_times_matrix);
+            var labels = [];
+            for (var i = 1; i <= race.nb_laps; i++) {
+                labels.push("L" + i);
+            }
+            data = {
+                labels,
+                datasets: car_positions.map((position, i) => ({
+                    label: race.cars[i].car.driver,
+                    data: position,
+                    borderWidth: 1,
+                    borderColor: '#' + race.cars[i].car.color
+                }))
+            };
+            console.log(car_positions);
+            window.dispatchEvent(new Event('resize'));
+            myChart.destroy();
+            myChart = new Chart(ctx, {type: "line", data, options});
         });
     </script>
 </head>
@@ -49,7 +148,7 @@
                 Current Lap: {{race.cars[0].lap_times.length}}
             </div>
             <div class="col-3">
-                Elapsed time: {{race.cars[0].total_time}}
+                Elapsed time: {{race.cars[0].total_time < 60 ? race.cars[0].total_time.toFixed(0) + " seconds" : (race.cars[0].total_time/60).toFixed(0) + ":" + (race.cars[0].total_time%60).toFixed(0) + " minutes"}}
             </div>
         </div>
         <div class="card-body" id="race{{race._id}}">
@@ -86,24 +185,24 @@
                         <tbody>
                         <tr ng-repeat="car in race.cars">
                             <th scope="row">{{$index + 1}}</th>
-                            <td>{{car.car.number}}</td>
+                            <td><i class="fa fa-circle" style="font-size: small" ng-style="getColor(car)"></i> {{car.car.number}}</td>
                             <td>{{car.car.driver}}</td>
                             <td>{{car.lap_times.length}}</td>
-                            <td ng-style="car.laps[car.laps.length - 1] < car.laps[car.laps.length - 2] && {'color':'green'} || {'color': 'orange'}">
+                            <td ng-style="(car.laps[car.laps.length - 2] - car.laps[car.laps.length - 1]) > 0 && {'color':'green'} || {'color': 'orange'}">
                                 {{car.laps[car.laps.length - 1]}}s
                                 <span style="font-size: 12px">({{(car.laps[car.laps.length - 1] - car.laps[car.laps.length - 2]) > 0 ? "+" : ""}}{{(car.laps[car.laps.length - 1] - car.laps[car.laps.length - 2]) | number : 3}}s)</span>
                             </td>
-                            <td ng-style="car.lap_times[car.lap_times.length - 1][0] < car.lap_times[car.lap_times.length - 2][0] && {'color':'green'} || {'color': 'orange'}">
-                                {{car.lap_times[car.lap_times.length - 1][0] | number : 3}}s
-                                <span style="font-size: 12px">({{(car.lap_times[car.lap_times.length - 1][0] - car.lap_times[car.lap_times.length - 2][0]) > 0 ? "+" : ""}}{{(car.lap_times[car.lap_times.length - 1][0] - car.lap_times[car.lap_times.length - 2][0]) | number : 3}}s)</span>
+                            <td ng-style="(car.lap_times[car.sector_indexes[0] - 1][0] - car.lap_times[car.sector_indexes[0]][0]) > 0 && {'color':'green'} || {'color': 'orange'}">
+                                {{car.lap_times[car.sector_indexes[0]][0] | number : 3}}s
+                                <span style="font-size: 12px">({{(car.lap_times[car.sector_indexes[0]][0] - car.lap_times[car.sector_indexes[0] - 1][0]) > 0 ? "+" : ""}}{{(car.lap_times[car.sector_indexes[0]][0] - car.lap_times[car.sector_indexes[0] - 1][0]) | number : 3}}s)</span>
                             </td>
-                            <td ng-style="car.lap_times[car.lap_times.length - 1][1] < car.lap_times[car.lap_times.length - 2][1] && {'color':'green'} || {'color': 'orange'}">
-                                {{car.lap_times[car.lap_times.length - 1][1] | number : 3}}s
-                                <span style="font-size: 12px">({{(car.lap_times[car.lap_times.length - 1][1] - car.lap_times[car.lap_times.length - 2][1]) > 0 ? "+" : ""}}{{(car.lap_times[car.lap_times.length - 1][1] - car.lap_times[car.lap_times.length - 2][1]) | number : 3}}s)</span>
+                            <td ng-style="(car.lap_times[car.sector_indexes[1] - 1][1] - car.lap_times[car.sector_indexes[1]][1]) > 0 && {'color':'green'} || {'color': 'orange'}">
+                                {{car.lap_times[car.sector_indexes[1]][1] | number : 3}}s
+                                <span style="font-size: 12px">({{(car.lap_times[car.sector_indexes[1]][1] - car.lap_times[car.sector_indexes[1] - 1][1]) > 0 ? "+" : ""}}{{(car.lap_times[car.sector_indexes[1]][1] - car.lap_times[car.sector_indexes[1] - 1][1]) | number : 3}}s)</span>
                             </td>
-                            <td ng-style="car.lap_times[car.lap_times.length - 1][2] < car.lap_times[car.lap_times.length - 2][2] && {'color':'green'} || {'color': 'orange'}">
-                                {{car.lap_times[car.lap_times.length - 1][2] | number : 3}}s
-                                <span style="font-size: 12px">({{(car.lap_times[car.lap_times.length - 1][2] - car.lap_times[car.lap_times.length - 2][2]) > 0 ? "+" : ""}}{{(car.lap_times[car.lap_times.length - 1][2] - car.lap_times[car.lap_times.length - 2][2]) | number : 3}}s)</span>
+                            <td ng-style="(car.lap_times[car.sector_indexes[2] - 1][2] - car.lap_times[car.sector_indexes[2]][2]) > 0 && {'color':'green'} || {'color': 'orange'}">
+                                {{car.lap_times[car.sector_indexes[2]][2] | number : 3}}s
+                                <span style="font-size: 12px">({{(car.lap_times[car.sector_indexes[2]][2] - car.lap_times[car.sector_indexes[2] - 1][2]) > 0 ? "+" : ""}}{{(car.lap_times[car.sector_indexes[2]][2] - car.lap_times[car.sector_indexes[2] - 1][2]) | number : 3}}s)</span>
                             </td>
                         </tr>
                         </tbody>
@@ -182,7 +281,7 @@
                     </div>
                 </div>
                 <div class="tab-pane fade" id="performanceGraph" role="tabpanel" aria-labelledby="performanceGraph-tab">
-                    <canvas id="myChart" width="400" height="400"></canvas>
+                    <canvas id="myChart" height="100"></canvas>
                 </div>
             </div>
         </div>
@@ -191,50 +290,129 @@
 
 
 <script type = "text/javascript">
-    var ctx = document.getElementById('myChart');
-    var graph = {
-        type: 'bar',
-        data: {
-            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-            datasets: [{
+    var ctx = $('#myChart');
+    var data = {
+        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+        datasets: [
+            {
                 label: '# of Votes',
-                data: [12, 19, 3, 5, 2, 3],
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)'
-                ],
+                data: [12, 13, 14, 15, 16, 17],
+                borderColor: 'rgba(255, 99, 132, 1)',
                 borderWidth: 1
+            },
+            {
+                label: '# of Comments',
+                data: [12, 13, 14, 15, 16, 17],
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }
+        ]
+    };
+    const options = {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    reverse: true,
+                    callback: function (value) { if (Number.isInteger(value)) { return value; } }
+                }
             }]
         },
-        options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    }
-                }]
+        elements: {
+            line: {
+                tension: 0
             }
-        }
+        },
+        animation: false
     };
-    var myChart = new Chart(ctx, graph);
+    var myChart = new Chart(ctx, {type: "line", data, options});
+    myChart.chart.width = 0;
+    myChart.resize();
     console.log($('#performanceGraph-tab'));
-    $('#performanceGraph-tab').on('shown.bs.tab', function (e) {
+    $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
+        ctx = $('#myChart');
+        function getBoxWidth(labelOpts, fontSize) {
+            return labelOpts.usePointStyle ?
+                fontSize * Math.SQRT2 :
+                labelOpts.boxWidth;
+        };
+
+        Chart.NewLegend = Chart.Legend.extend({
+            afterFit: function() {
+                this.height = this.height + 100;
+            },
+        });
+
+        function createNewLegendAndAttach(chartInstance, legendOpts) {
+            var legend = new Chart.NewLegend({
+                ctx: chartInstance.chart.ctx,
+                options: legendOpts,
+                chart: chartInstance
+            });
+
+            if (chartInstance.legend) {
+                Chart.layoutService.removeBox(chartInstance, chartInstance.legend);
+                delete chartInstance.newLegend;
+            }
+
+            chartInstance.newLegend = legend;
+            Chart.layoutService.addBox(chartInstance, legend);
+        }
+
+// Register the legend plugin
+        Chart.plugins.register({
+            beforeInit: function(chartInstance) {
+                var legendOpts = chartInstance.options.legend;
+
+                if (legendOpts) {
+                    createNewLegendAndAttach(chartInstance, legendOpts);
+                }
+            },
+            beforeUpdate: function(chartInstance) {
+                var legendOpts = chartInstance.options.legend;
+
+                if (legendOpts) {
+                    legendOpts = Chart.helpers.configMerge(Chart.defaults.global.legend, legendOpts);
+
+                    if (chartInstance.newLegend) {
+                        chartInstance.newLegend.options = legendOpts;
+                    } else {
+                        createNewLegendAndAttach(chartInstance, legendOpts);
+                    }
+                } else {
+                    Chart.layoutService.removeBox(chartInstance, chartInstance.newLegend);
+                    delete chartInstance.newLegend;
+                }
+            },
+            afterEvent: function(chartInstance, e) {
+                var legend = chartInstance.newLegend;
+                if (legend) {
+                    legend.handleEvent(e);
+                }
+            }
+        });
+
+        const car_positions = angular.element($('#telemetryController')).scope().car_positions;
+        const lap_times_matrix = angular.element($('#telemetryController')).scope().lap_times_matrix;
+        const race = angular.element($('#telemetryController')).scope().race;
+        console.log(lap_times_matrix);
+        var labels = [];
+        for (var i = 1; i <= race.nb_laps; i++) {
+            labels.push("L" + i);
+        }
+        data = {
+            labels,
+            datasets: car_positions.map((position, i) => ({
+                label: race.cars[i].car.driver,
+                data: position,
+                borderWidth: 1,
+                borderColor: '#' + race.cars[i].car.color
+                }))
+        };
+        console.log(car_positions);
+        window.dispatchEvent(new Event('resize'));
         myChart.destroy();
-        console.log("shown.bs.tab");
-        myChart = new Chart(ctx, graph);
-    });
+        myChart = new Chart(ctx, {type: "line", data, options});
+    })
 </script>
 </body>
 </html>

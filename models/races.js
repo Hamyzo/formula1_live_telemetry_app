@@ -31,7 +31,8 @@ const RaceSchema = new Schema({
     },
     status: {
         type: String,
-        enum: ['pending', 'finished', 'ongoing']
+        enum: ['pending', 'finished', 'ongoing'],
+        default: 'pending'
     }
 });
 
